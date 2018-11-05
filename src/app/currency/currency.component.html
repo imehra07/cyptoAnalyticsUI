@@ -1,0 +1,37 @@
+<div>
+  <label for="date">Select Date:</label>
+  <input id= "date" type="date" placeholder="Date" [(ngModel)]="selectedDate"/>
+
+  <label for="currencyName">Select Currency:</label>
+  <input id= "currencyName" type="text" placeholder="Currency name" [(ngModel)]="searchCriteria.currency"/>
+
+  <button (click)="applyFilter()">Go</button>
+  <table *ngIf="searchResults.length <= 0" class="table table-bordered">
+    <tr><th *ngFor="let header of headers">{{header.displayName}}</th></tr>
+    <tr><td [attr.colspan]="headers.length + 1">No results found</td></tr>
+  </table>
+
+  <table *ngIf="searchResults.length > 0" class="table table-bordered">
+
+    <tr>
+      <th *ngFor="let header of headers">{{header.displayName}}
+      </th>
+    </tr>
+    <tbody *ngFor="let row of searchResults; let i = index">
+    <tr class="bg-info" *ngIf="row?.quotes">
+      <td *ngFor="let header of headers">
+        <div *ngIf="header.key === 'currency'"><span class="glyphicon small" aria-label="Expand" [ngClass]="{'glyphicon-plus': !row.expand, 'glyphicon-minus': row.expand}" role="button" (click)="toggle(row)"></span>
+          <span> {{row[header.key]}}</span>
+        </div>
+        <div *ngIf="header.key === 'profit'">{{row[header.key]}}</div>
+        <div *ngIf="header.key === 'date'">{{row[header.key] | displayDate}}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="100" *ngIf="row.expand">
+        <currency-inner-panel [quotes]="row?.quotes"> </currency-inner-panel>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
